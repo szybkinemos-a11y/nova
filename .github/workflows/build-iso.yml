@@ -27,7 +27,7 @@ jobs:
       - name: Zbuduj ISO
         run: |
           chmod +x scripts/*.sh scripts/stages/*.sh
-          sudo -E ENABLE_ROUNDED_CORNERS=${{ inputs.rounded_corners }} bash ./scripts/build-iso.sh
+          sudo -E MIRROR=http://azure.archive.ubuntu.com/ubuntu ENABLE_ROUNDED_CORNERS=${{ inputs.rounded_corners }} bash ./scripts/build-iso.sh
 
       - name: Wyslij ISO
         uses: actions/upload-artifact@v4

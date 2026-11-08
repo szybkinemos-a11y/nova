@@ -32,7 +32,7 @@ stage_squashfs() {
 
     log "mksquashfs ($SQUASHFS_COMP) – to potrwa kilka minut"
     local comp=(-comp "$SQUASHFS_COMP")
-    [[ $SQUASHFS_COMP == zstd ]] && comp+=(-Xcompression-level 19)
+    [[ $SQUASHFS_COMP == zstd ]] && comp+=(-Xcompression-level 6)
     [[ $SQUASHFS_COMP == xz ]] && comp+=(-Xbcj x86)
     mksquashfs "$CHROOT_DIR" "$IMAGE_DIR/casper/filesystem.squashfs" \
         -noappend -b 1M "${comp[@]}" -no-progress \
