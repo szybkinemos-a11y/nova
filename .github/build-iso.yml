@@ -1,0 +1,40 @@
+name: Zbuduj NovaOS.iso
+
+on:
+  workflow_dispatch:
+    inputs:
+      rounded_corners:
+        description: "Zaokraglone rogi okien (yes/no)"
+        default: "yes"
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Zwolnij miejsce
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache /usr/local/share/boost /usr/local/.ghcup /usr/share/swift
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h /
+
+      - name: Narzedzia
+        run: sudo bash ./scripts/install-host-deps.sh
+
+      - name: Zbuduj ISO
+        run: |
+          chmod +x scripts/*.sh scripts/stages/*.sh
+          sudo -E ENABLE_ROUNDED_CORNERS=${{ inputs.rounded_corners }} bash ./scripts/build-iso.sh
+
+      - name: Wyslij ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: NovaOS-iso
+          path: |
+            out/NovaOS.iso
+            out/NovaOS.iso.sha256
+          compression-level: 0
+          retention-days: 14
