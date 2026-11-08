@@ -1,0 +1,16 @@
+# ---------------------------------------------------------------
+#  Pakiety usuwane z obrazu (zbędne procesy / dublujące aplikacje)
+#  Usuwane tylko, jeśli zostały dociągnięte jako zależności.
+# ---------------------------------------------------------------
+snapd
+ubuntu-advantage-desktop-daemon
+ubuntu-pro-client-l10n
+apport
+apport-symptoms
+whoopsie
+popularity-contest
+kubuntu-notification-helper
+plasma-discover            # zastąpiony przez Nova Store
+konsole                    # zastąpiony przez Nova Terminal
+budgie-sddm-theme          # dociągany przez sddm (Recommends: sddm-theme)
+alacritty                  # dociągany jako x-terminal-emulator; zastąpiony przez Nova Terminal

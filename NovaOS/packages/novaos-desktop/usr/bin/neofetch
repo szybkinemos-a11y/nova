@@ -1,0 +1,3 @@
+#!/bin/sh
+# NovaOS: neofetch nie jest już rozwijany – używamy fastfetch z logo NovaOS.
+exec fastfetch "$@"

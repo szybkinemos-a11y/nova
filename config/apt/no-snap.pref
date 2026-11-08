@@ -1,0 +1,4 @@
+# NovaOS: brak snapów. Aplikacje dostarczają APT oraz Flatpak (Flathub).
+Package: snapd
+Pin: release a=*
+Pin-Priority: -10

@@ -1,0 +1,9 @@
+[Common]
+OutlineCloseButton=false
+ShadowSize=ShadowLarge
+ShadowStrength=110
+
+[Windeco]
+TitleAlignment=AlignCenterFullWidth
+DrawBackgroundGradient=false
+ButtonSize=ButtonDefault

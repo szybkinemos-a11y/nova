@@ -1,0 +1,15 @@
+#!/bin/sh
+set -e
+# Przejmujemy pliki tożsamości systemu od base-files (dpkg-divert),
+# dzięki czemu aktualizacje Ubuntu ich nie nadpiszą.
+divert() {
+    dpkg-divert --package novaos-desktop --add --rename --divert "$1.ubuntu" "$1" >/dev/null
+}
+case "$1" in
+    install|upgrade)
+        for f in /usr/lib/os-release /etc/lsb-release /etc/issue /etc/issue.net; do
+            divert "$f"
+        done
+        ;;
+esac
+exit 0

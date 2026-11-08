@@ -1,0 +1,70 @@
+# ---------------------------------------------------------------
+#  NovaOS – środowisko graficzne (KDE Plasma 6 na Waylandzie)
+#  Bez pełnego meta-pakietu kubuntu-desktop: tylko to, co potrzebne.
+# ---------------------------------------------------------------
+plasma-desktop
+plasma-workspace
+kwin-wayland
+xwayland
+sddm
+sddm-theme-breeze         # zapasowy motyw logowania
+kde-config-sddm
+systemsettings
+kinfocenter
+kscreen
+powerdevil
+plasma-nm
+plasma-pa
+bluedevil
+bluez
+plasma-firewall
+plasma-widgets-addons
+kdeplasma-addons-data
+milou                      # wyszukiwanie w menu Start
+kde-cli-tools
+kio-extras
+polkit-kde-agent-1
+kde-config-gtk-style
+kde-config-plymouth
+kde-config-flatpak
+kde-config-screenlocker
+xdg-desktop-portal-kde
+xdg-desktop-portal-gtk
+kde-spectacle              # zrzuty ekranu
+ark                        # archiwa
+
+# Wygląd
+breeze
+breeze-gtk-theme
+breeze-cursor-theme
+breeze-icon-theme
+papirus-icon-theme
+fonts-inter
+fonts-noto-core
+fonts-noto-color-emoji
+
+# QML dla ekranu logowania NovaOS (SDDM, Qt6)
+qml6-module-qtquick
+qml6-module-qtquick-controls
+qml6-module-qtquick-layouts
+qml6-module-qtquick-effects
+qml6-module-qtqml-workerscript
+qt6-wayland
+qt6-image-formats-plugins
+
+# Dźwięk i multimedia
+pipewire
+pipewire-pulse
+wireplumber
+gstreamer1.0-plugins-good
+gstreamer1.0-plugins-ugly
+gstreamer1.0-libav
+ffmpegthumbs
+
+# Drukowanie
+cups
+print-manager
+
+# Aplikacje Flatpak (Nova Store używa Flathub)
+flatpak
+xdg-utils                  # xdg-mime, xdg-settings (domyślne aplikacje)

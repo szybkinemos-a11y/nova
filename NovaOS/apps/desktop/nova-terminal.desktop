@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Terminal
+GenericName=Terminal
+GenericName[pl]=Terminal
+Comment=Use the command line
+Comment[pl]=Wiersz poleceń
+Exec=nova-terminal
+Icon=nova-terminal
+Categories=System;TerminalEmulator;
+Keywords=shell;console;bash;cmd;konsola;
+StartupNotify=true
+StartupWMClass=nova-terminal
+Terminal=false
+X-KDE-AuthorizeAction=shell_access

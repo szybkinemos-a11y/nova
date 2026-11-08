@@ -1,0 +1,15 @@
+[Default Applications]
+text/html=nova-browser.desktop
+x-scheme-handler/http=nova-browser.desktop
+x-scheme-handler/https=nova-browser.desktop
+inode/directory=nova-files.desktop
+audio/mpeg=nova-music.desktop
+audio/flac=nova-music.desktop
+audio/ogg=nova-music.desktop
+audio/x-wav=nova-music.desktop
+image/png=nova-gallery.desktop
+image/jpeg=nova-gallery.desktop
+image/webp=nova-gallery.desktop
+image/gif=nova-gallery.desktop
+text/plain=nova-notes.desktop
+text/markdown=nova-notes.desktop

@@ -1,0 +1,7 @@
+/* NovaOS – arkusz stylu instalatora */
+#mainApp { background: #15131F; }
+#sidebarApp { background: #12101B; }
+#logoApp { padding: 16px; }
+QPushButton { border-radius: 8px; padding: 6px 16px; }
+#view-button-next, #view-button-install { background: #7B61FF; color: white; font-weight: 600; }
+QProgressBar::chunk { background: qlineargradient(x1:0,y1:0,x2:1,y2:0, stop:0 #A855F7, stop:1 #3B82F6); border-radius: 4px; }

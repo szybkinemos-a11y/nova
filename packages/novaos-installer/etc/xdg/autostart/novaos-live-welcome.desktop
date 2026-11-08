@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=NovaOS Live Welcome
+Name[pl]=Powitanie NovaOS Live
+Exec=/usr/libexec/novaos/live-welcome
+Icon=novaos-logo
+NoDisplay=true
+X-KDE-autostart-phase=2
+OnlyShowIn=KDE;

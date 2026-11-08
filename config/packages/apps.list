@@ -1,0 +1,21 @@
+# ---------------------------------------------------------------
+#  Zależności aplikacji Nova (Python 3 + Qt 6 / PySide6)
+#  Pakiety novaos-* deklarują je też w Depends; tutaj instalujemy
+#  je wcześniej, żeby etap "packages" był cache'owany.
+# ---------------------------------------------------------------
+python3
+python3-pyside6.qtcore
+python3-pyside6.qtgui
+python3-pyside6.qtwidgets
+python3-pyside6.qtsvg
+python3-pyside6.qtnetwork
+python3-pyside6.qtmultimedia
+python3-pyside6.qtwebenginecore
+python3-pyside6.qtwebenginewidgets
+python3-pyside6.qtprintsupport
+python3-pyside6.qtdbus
+python3-psutil
+python3-pyte               # emulator VT100 dla Nova Terminal
+python3-mutagen            # tagi audio dla Nova Music
+pkexec                     # uprawnienia administratora z GUI
+libnotify-bin              # notify-send

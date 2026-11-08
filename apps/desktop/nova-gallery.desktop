@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Gallery
+GenericName=Image Viewer
+GenericName[pl]=Galeria zdjęć
+Comment=View your photos
+Comment[pl]=Przeglądaj swoje zdjęcia
+Exec=nova-gallery %f
+Icon=nova-gallery
+Categories=Graphics;Viewer;
+Keywords=photos;images;pictures;zdjęcia;obrazy;
+StartupNotify=true
+StartupWMClass=nova-gallery
+Terminal=false
+MimeType=image/png;image/jpeg;image/webp;image/gif;image/bmp;image/tiff;image/svg+xml;

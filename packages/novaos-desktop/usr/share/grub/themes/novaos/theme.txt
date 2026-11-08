@@ -1,0 +1,61 @@
+# NovaOS – motyw menu rozruchowego GRUB
+title-text: ""
+desktop-image: "background.png"
+desktop-color: "#0B0B1A"
+terminal-font: "Inter Regular 18"
+terminal-box: "select_*.png"
+
++ image {
+    left = 50%-64
+    top = 14%
+    file = "logo.png"
+}
+
++ label {
+    top = 14%+142
+    left = 0
+    width = 100%
+    align = "center"
+    text = "NovaOS"
+    font = "Inter Bold 32"
+    color = "#FFFFFF"
+}
+
++ boot_menu {
+    left = 30%
+    top = 42%
+    width = 40%
+    height = 36%
+    item_font = "Inter Regular 18"
+    selected_item_font = "Inter Bold 18"
+    item_color = "#C9C5E3"
+    selected_item_color = "#FFFFFF"
+    item_height = 44
+    item_padding = 4
+    item_spacing = 18
+    icon_width = 0
+    icon_height = 0
+    selected_item_pixmap_style = "select_*.png"
+    scrollbar = false
+}
+
++ label {
+    id = "__timeout__"
+    top = 86%
+    left = 0
+    width = 100%
+    align = "center"
+    font = "Inter Regular 16"
+    color = "#A9A5C4"
+    text = "Automatyczny start za %d s"
+}
+
++ label {
+    top = 92%
+    left = 0
+    width = 100%
+    align = "center"
+    font = "Inter Regular 14"
+    color = "#7E7A99"
+    text = "↑↓ wybór   Enter uruchom   e edytuj   c konsola"
+}

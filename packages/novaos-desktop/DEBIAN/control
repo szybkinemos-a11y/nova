@@ -1,0 +1,13 @@
+Package: novaos-desktop
+Version: @DISTRO_VERSION@
+Architecture: all
+Section: misc
+Priority: optional
+Maintainer: NovaOS Team <team@novaos.example.org>
+Depends: plasma-desktop, plasma-workspace, kwin-wayland, sddm, plymouth, plymouth-themes, papirus-icon-theme, breeze, fonts-inter, fastfetch, flatpak, qml6-module-qtquick-effects, qml6-module-qtquick-controls, qml6-module-qtquick-layouts, novaos-apps (= @DISTRO_VERSION@)
+Recommends: systemd-zram-generator, ufw
+Conflicts: kubuntu-settings-desktop
+Description: NovaOS desktop – branding, theme and system configuration
+ Logo, wallpapers, icons, KDE Plasma global theme "NovaOS", color
+ schemes Nova Dark / Nova Light, SDDM login theme, Plymouth boot splash,
+ GRUB theme, Nova Control Center widget and the "nova" command.

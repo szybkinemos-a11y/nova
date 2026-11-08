@@ -1,0 +1,11 @@
+Package: novaos-installer
+Version: @DISTRO_VERSION@
+Architecture: all
+Section: admin
+Priority: optional
+Maintainer: NovaOS Team <team@novaos.example.org>
+Depends: calamares, qml6-module-qtquick, novaos-desktop (= @DISTRO_VERSION@)
+Description: NovaOS installer (live session only)
+ Calamares configuration, branding and slideshow for installing NovaOS,
+ plus the live-session welcome dialog. Removed automatically from the
+ installed system.

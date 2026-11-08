@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Monitor
+GenericName=System Monitor
+GenericName[pl]=Monitor systemu
+Comment=CPU, memory, disks and processes
+Comment[pl]=Procesor, pamięć, dyski i procesy
+Exec=nova-monitor
+Icon=nova-monitor
+Categories=System;Monitor;
+Keywords=task;process;cpu;ram;menedżer zadań;procesy;
+StartupNotify=true
+StartupWMClass=nova-monitor
+Terminal=false

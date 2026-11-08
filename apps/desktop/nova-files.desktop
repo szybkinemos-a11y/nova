@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Files
+GenericName=File Manager
+GenericName[pl]=Menedżer plików
+Comment=Browse and manage files
+Comment[pl]=Przeglądaj pliki i zarządzaj nimi
+Exec=nova-files %U
+Icon=nova-files
+Categories=System;FileTools;FileManager;
+Keywords=files;folders;pliki;foldery;eksplorator;
+StartupNotify=true
+StartupWMClass=nova-files
+Terminal=false
+MimeType=inode/directory;

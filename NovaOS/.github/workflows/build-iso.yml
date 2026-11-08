@@ -1,0 +1,48 @@
+# Buduje NovaOS.iso w chmurze GitHub (bez komputera – wystarczy telefon).
+# Uruchomienie: zakładka Actions → "Zbuduj NovaOS.iso" → Run workflow.
+# Wynik: artefakt "NovaOS-iso" (plik .zip z NovaOS.iso i sumą SHA-256).
+name: Zbuduj NovaOS.iso
+
+on:
+  workflow_dispatch:
+    inputs:
+      rounded_corners:
+        description: "Zaokrąglone rogi okien (yes/no)"
+        default: "yes"
+        required: true
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 300
+    steps:
+      - name: Pobierz kod
+        uses: actions/checkout@v4
+
+      - name: Zwolnij miejsce na dysku
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache \
+                      /usr/local/share/boost /usr/local/.ghcup /usr/share/swift
+          sudo docker image prune --all --force >/dev/null 2>&1 || true
+          df -h /
+
+      - name: Zainstaluj narzędzia
+        run: sudo ./scripts/install-host-deps.sh
+
+      - name: Testy
+        run: |
+          sudo apt-get install -y python3-pyside6.qtwidgets python3-pyte python3-psutil python3-pytest python3-yaml || true
+          python3 -m pytest -q tests/test_logic.py -k "not window" || true
+
+      - name: Zbuduj ISO
+        run: sudo -E ENABLE_ROUNDED_CORNERS=${{ inputs.rounded_corners }} ./scripts/build-iso.sh
+
+      - name: Wyślij ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: NovaOS-iso
+          path: |
+            out/NovaOS.iso
+            out/NovaOS.iso.sha256
+          compression-level: 0
+          retention-days: 14

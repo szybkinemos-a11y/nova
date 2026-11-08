@@ -1,0 +1,120 @@
+#!/usr/bin/python3 -I
+"""
+nova-helper – uprzywilejowany pomocnik aplikacji NovaOS (uruchamiany przez pkexec).
+
+Wykonuje WYŁĄCZNIE ściśle zdefiniowane operacje z walidacją argumentów.
+Hasła są czytane ze standardowego wejścia (nigdy z linii poleceń).
+Polityka polkit: /usr/share/polkit-1/actions/org.novaos.helper.policy
+"""
+import os
+import re
+import subprocess
+import sys
+
+USER_RE = re.compile(r"^[a-z_][a-z0-9_-]{0,31}$")
+PKG_RE = re.compile(r"^[a-z0-9][a-z0-9+.\-]{1,100}(:[a-z0-9]+)?$")
+LANG_RE = re.compile(r"^[a-z]{2,3}$")
+ENV = {"PATH": "/usr/sbin:/usr/bin:/sbin:/bin", "LC_ALL": "C.UTF-8", "DEBIAN_FRONTEND": "noninteractive"}
+PROTECTED = {"novaos-desktop", "novaos-apps", "plasma-desktop", "plasma-workspace", "sddm", "systemd",
+             "sudo", "linux-generic", "kwin-wayland", "network-manager", "apt", "dpkg", "base-files"}
+
+
+def die(msg: str, code: int = 2) -> None:
+    print(f"nova-helper: {msg}", file=sys.stderr)
+    sys.exit(code)
+
+
+def run(args, stdin=None) -> int:
+    return subprocess.run(args, env=ENV, input=stdin, text=True).returncode
+
+
+def apt(args) -> int:
+    base = ["apt-get", "-y", "-o", "APT::Status-Fd=1", "-o", "Dpkg::Options::=--force-confdef",
+            "-o", "Dpkg::Options::=--force-confold"]
+    return run(base + args)
+
+
+def check_user(u: str) -> str:
+    if not USER_RE.match(u):
+        die(f"invalid user name: {u!r}")
+    return u
+
+
+def check_pkgs(pkgs):
+    if not pkgs:
+        die("no packages given")
+    for p in pkgs:
+        if not PKG_RE.match(p):
+            die(f"invalid package name: {p!r}")
+    return pkgs
+
+
+def read_password() -> str:
+    pw = sys.stdin.readline().rstrip("\n")
+    if not pw or ":" in pw or "\n" in pw:
+        die("invalid password")
+    return pw
+
+
+def main(argv) -> int:
+    if os.geteuid() != 0:
+        die("must be run as root (pkexec)", 1)
+    if not argv:
+        die("usage: nova-helper <command> [args]")
+    cmd, args = argv[0], argv[1:]
+
+    if cmd == "apt-update":
+        return run(["apt-get", "update"])
+    if cmd == "apt-upgrade":
+        return apt(["full-upgrade"]) or apt(["autoremove", "--purge"])
+    if cmd == "apt-install":
+        return apt(["install"] + check_pkgs(args))
+    if cmd == "apt-remove":
+        pkgs = check_pkgs(args)
+        if PROTECTED & set(pkgs):
+            die("refusing to remove a core system package")
+        return apt(["remove"] + pkgs)
+
+    if cmd == "user-add":                       # user-add LOGIN "Pełna nazwa" 0|1  (hasło: stdin)
+        if len(args) != 3:
+            die("user-add LOGIN FULLNAME ADMIN")
+        login, full, admin = check_user(args[0]), args[1], args[2] == "1"
+        if re.search(r"[:,\n]", full) or len(full) > 100:
+            die("invalid full name")
+        pw = read_password()
+        groups = "adm,cdrom,dip,plugdev,lpadmin,users" + (",sudo" if admin else "")
+        rc = run(["useradd", "-m", "-s", "/bin/bash", "-c", full, "-G", groups, login])
+        return rc or run(["chpasswd"], stdin=f"{login}:{pw}\n")
+    if cmd == "user-del":                       # user-del LOGIN keep|purge
+        login = check_user(args[0]) if args else die("user-del LOGIN keep|purge")
+        if len(args) > 1 and args[1] not in ("keep", "purge"):
+            die("invalid request")
+        caller = int(os.environ.get("PKEXEC_UID", "-1"))
+        import pwd
+        if pwd.getpwnam(login).pw_uid == caller:
+            die("cannot delete the current user")
+        return run(["userdel"] + (["-r"] if len(args) > 1 and args[1] == "purge" else []) + [login])
+    if cmd == "user-passwd":                    # user-passwd LOGIN (hasło: stdin)
+        login = check_user(args[0]) if args else die("user-passwd LOGIN")
+        return run(["chpasswd"], stdin=f"{login}:{read_password()}\n")
+    if cmd == "user-admin":                     # user-admin LOGIN 0|1
+        login = check_user(args[0]) if len(args) == 2 else die("user-admin LOGIN 0|1")
+        return run(["gpasswd", "-a" if args[1] == "1" else "-d", login, "sudo"])
+
+    if cmd == "auto-updates":                   # auto-updates on|off
+        on = (args or ["off"])[0] == "on"
+        with open("/etc/apt/apt.conf.d/20auto-upgrades", "w", encoding="utf-8") as f:
+            f.write(f'APT::Periodic::Update-Package-Lists "{int(on)}";\nAPT::Periodic::Unattended-Upgrade "{int(on)}";\n')
+        return 0
+    if cmd == "firewall":                       # firewall on|off
+        return run(["ufw", "--force", "enable" if (args or [""])[0] == "on" else "disable"])
+    if cmd == "language-pack":                  # language-pack pl
+        code = args[0] if args and LANG_RE.match(args[0]) else die("language-pack CODE")
+        return apt(["install", f"language-pack-{code}", f"language-pack-kde-{code}"])
+
+    die(f"unknown command: {cmd}")
+    return 2
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv[1:]))

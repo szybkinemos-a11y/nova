@@ -1,0 +1,16 @@
+[Unit]
+Description=NovaOS: configure Flathub repository
+Documentation=man:flatpak-remote-add(1)
+Wants=network-online.target
+After=network-online.target
+ConditionPathExists=/usr/bin/flatpak
+ConditionPathExists=!/var/lib/flatpak/repo/flathub.trustedkeys.gpg
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+Restart=on-failure
+RestartSec=60
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,73 @@
+#!/usr/bin/python3
+"""Okno powitalne sesji live NovaOS: 'Wypróbuj' albo 'Zainstaluj'."""
+import os
+import shutil
+import subprocess
+import sys
+from pathlib import Path
+
+try:
+    if "boot=casper" not in Path("/proc/cmdline").read_text():
+        sys.exit(0)                       # tylko w sesji live
+except OSError:
+    sys.exit(0)
+
+# w sesji live nie blokujemy ekranu (użytkownik live nie ma hasła)
+for args in (["--file", "kscreenlockerrc", "--group", "Daemon", "--key", "Autolock", "false"],
+             ["--file", "kscreenlockerrc", "--group", "Daemon", "--key", "LockOnResume", "false"]):
+    subprocess.run(["kwriteconfig6", *args], check=False)
+
+# ikona instalatora na pulpicie
+desk = Path.home() / "Desktop"
+desk.mkdir(exist_ok=True)
+target = desk / "novaos-installer.desktop"
+if not target.exists():
+    shutil.copy("/usr/share/applications/novaos-installer.desktop", target)
+    target.chmod(0o755)
+
+sys.path.insert(0, "/usr/lib/novaos/python")
+from PySide6.QtCore import Qt  # noqa: E402
+from PySide6.QtGui import QIcon, QPixmap  # noqa: E402
+from PySide6.QtWidgets import QApplication, QDialog, QHBoxLayout, QLabel, QPushButton, QVBoxLayout  # noqa: E402
+from novakit import theme  # noqa: E402
+
+pl = os.environ.get("LANG", "").startswith("pl")
+T = (lambda p, e: p) if pl else (lambda p, e: e)
+
+app = QApplication(sys.argv)
+app.setDesktopFileName("novaos-installer")
+theme.apply(app)
+d = QDialog()
+d.setWindowTitle("NovaOS")
+d.setWindowIcon(QIcon.fromTheme("novaos-logo"))
+d.setMinimumWidth(560)
+v = QVBoxLayout(d)
+v.setContentsMargins(36, 30, 36, 28)
+v.setSpacing(14)
+logo = QLabel()
+logo.setPixmap(QIcon.fromTheme("novaos-logo").pixmap(112, 112))
+logo.setAlignment(Qt.AlignCenter)
+title = QLabel(T("Witaj w NovaOS", "Welcome to NovaOS"))
+title.setObjectName("Title")
+title.setAlignment(Qt.AlignCenter)
+text = QLabel(T("Możesz wypróbować NovaOS bez wprowadzania zmian na komputerze albo zainstalować system na dysku.\n"
+                "Instalator zawsze zapyta o potwierdzenie, zanim cokolwiek zapisze.",
+                "You can try NovaOS without changing your computer, or install it to disk.\n"
+                "The installer always asks for confirmation before writing anything."))
+text.setWordWrap(True)
+text.setAlignment(Qt.AlignCenter)
+text.setObjectName("Subtitle")
+row = QHBoxLayout()
+try_btn = QPushButton(T("Wypróbuj NovaOS", "Try NovaOS"))
+inst_btn = QPushButton(T("Zainstaluj NovaOS", "Install NovaOS"))
+inst_btn.setObjectName("Accent")
+for b in (try_btn, inst_btn):
+    b.setMinimumHeight(42)
+    row.addWidget(b)
+try_btn.clicked.connect(d.reject)
+inst_btn.clicked.connect(d.accept)
+for w in (logo, title, text):
+    v.addWidget(w)
+v.addLayout(row)
+if d.exec() == QDialog.Accepted:
+    subprocess.Popen(["novaos-install"])

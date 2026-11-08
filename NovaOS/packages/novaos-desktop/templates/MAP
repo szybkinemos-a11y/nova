@@ -1,0 +1,6 @@
+# szablon                cel w pakiecie
+os-release.in            usr/lib/os-release
+lsb-release.in           etc/lsb-release
+issue.in                 etc/issue
+issue.net.in             etc/issue.net
+version.in               usr/share/novaos/version

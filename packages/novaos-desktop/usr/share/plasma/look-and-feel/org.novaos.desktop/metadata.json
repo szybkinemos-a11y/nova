@@ -1,0 +1,15 @@
+{
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "KPlugin": {
+        "Authors": [{ "Name": "NovaOS Team" }],
+        "Category": "",
+        "Description": "Global theme of NovaOS: dark, minimal, violet-blue accent",
+        "Description[pl]": "Motyw globalny NovaOS: ciemny, minimalistyczny, fioletowo-niebieski akcent",
+        "Id": "org.novaos.desktop",
+        "License": "GPL-3.0-or-later",
+        "Name": "NovaOS",
+        "Version": "1.0",
+        "Website": "https://novaos.example.org"
+    },
+    "X-Plasma-APIVersion": "2"
+}

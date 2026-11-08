@@ -1,0 +1,16 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [{ "Name": "NovaOS Team" }],
+        "Category": "System Information",
+        "Description": "Quick toggles: Wi-Fi, Bluetooth, dark mode, night light, volume",
+        "Description[pl]": "Szybkie przełączniki: Wi-Fi, Bluetooth, tryb ciemny, światło nocne, głośność",
+        "Icon": "configure",
+        "Id": "org.novaos.controlcenter",
+        "License": "GPL-3.0-or-later",
+        "Name": "Nova Control Center",
+        "Name[pl]": "Centrum sterowania Nova",
+        "Version": "1.0"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0"
+}

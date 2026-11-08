@@ -1,0 +1,183 @@
+#!/usr/bin/env bash
+# =====================================================================
+#  nova – narzędzie wiersza poleceń NovaOS
+# =====================================================================
+set -uo pipefail
+
+VIO=$'\e[38;5;141m'; BLU=$'\e[38;5;75m'; CYA=$'\e[38;5;117m'; DIM=$'\e[2m'
+BLD=$'\e[1m'; RED=$'\e[31m'; GRN=$'\e[32m'; YEL=$'\e[33m'; RST=$'\e[0m'
+[[ -t 1 ]] || { VIO=; BLU=; CYA=; DIM=; BLD=; RED=; GRN=; YEL=; RST=; }
+
+# shellcheck source=/dev/null
+. /etc/os-release
+VERSION_FILE=/usr/share/novaos/version
+
+is_pl() { [[ ${LC_ALL:-${LC_MESSAGES:-${LANG:-}}} == pl* ]]; }
+t() { if is_pl; then printf '%s' "$1"; else printf '%s' "$2"; fi; }
+
+need_root() {
+    if [[ $EUID -ne 0 ]]; then exec sudo "$0" "$@"; fi
+}
+
+logo() {
+    sed -e "s/\$1/${VIO//\\/\\\\}/g" -e "s/\$2/${BLU//\\/\\\\}/g" -e "s/\$3/${CYA//\\/\\\\}/g" \
+        -e "s/\$/${RST//\\/\\\\}/" /usr/share/novaos/ascii-logo.txt
+}
+
+row() { printf "  ${VIO}${BLD}%-14s${RST} %s\n" "$1" "$2"; }
+
+info() {
+    logo
+    echo
+    printf "  ${BLD}%s${RST} ${DIM}(%s)${RST}\n\n" "${PRETTY_NAME:-NovaOS}" "${VERSION_CODENAME:-}"
+    row "$(t Wersja Version)" "$(cat "$VERSION_FILE" 2>/dev/null || echo "${VERSION_ID:-?}")"
+    row "$(t Baza Base)" "Ubuntu ${UBUNTU_VERSION_ID:-${VERSION_ID:-}} LTS (${UBUNTU_CODENAME:-})"
+    row "$(t Jądro Kernel)" "$(uname -r)"
+    row "$(t Pulpit Desktop)" "KDE Plasma $(plasmashell --version 2>/dev/null | awk '{print $2}') (${XDG_SESSION_TYPE:-?})"
+    row "$(t "Czas pracy" Uptime)" "$(uptime -p 2>/dev/null | sed 's/^up //')"
+    row "$(t Pakiety Packages)" "$(dpkg-query -f '.\n' -W 2>/dev/null | wc -l) (apt), $(flatpak list --app 2>/dev/null | wc -l) (flatpak)"
+    row "$(t Pamięć Memory)" "$(free -h | awk '/^Mem/{print $3" / "$2}')"
+    row "$(t Dysk Disk)" "$(df -h / | awk 'NR==2{print $3" / "$2" ("$5")"}')"
+    row "$(t Strona Website)" "${HOME_URL:-}"
+    echo
+    printf "  %s\n\n" "$(t "Wpisz ${BLD}nova help${RST}, aby zobaczyć wszystkie polecenia." "Type ${BLD}nova help${RST} to list all commands.")"
+}
+
+usage() {
+    cat <<USAGE
+${VIO}${BLD}nova${RST} – $(t "narzędzie systemowe NovaOS" "NovaOS system tool")
+
+  nova                      $(t "informacje o systemie" "system information")
+  nova version              $(t "wersja NovaOS" "NovaOS version")
+  nova update               $(t "aktualizuj system (APT + Flatpak)" "update system (APT + Flatpak)")
+  nova search <$(t fraza term)>       $(t "szukaj aplikacji (APT + Flathub)" "search apps (APT + Flathub)")
+  nova install <$(t pakiet package)>    $(t "zainstaluj z APT lub Flathub (ID z kropkami)" "install from APT or Flathub (dotted ID)")
+  nova remove <$(t pakiet package)>     $(t "odinstaluj" "uninstall")
+  nova theme dark|light     $(t "przełącz motyw" "switch theme")
+  nova accent <#RRGGBB>     $(t "zmień kolor akcentu" "change accent colour")
+  nova wallpaper <$(t plik file)>     $(t "ustaw tapetę" "set wallpaper")
+  nova doctor               $(t "diagnostyka systemu" "system diagnostics")
+  nova clean                $(t "wyczyść pamięć podręczną pakietów" "clean package caches")
+  nova help                 $(t "ta pomoc" "this help")
+USAGE
+}
+
+is_flatpak_id() { [[ $1 =~ ^[A-Za-z0-9_-]+(\.[A-Za-z0-9_-]+){2,}$ ]]; }
+
+cmd_update() {
+    echo "${BLU}==>${RST} $(t "Aktualizacja pakietów APT" "Updating APT packages")"
+    sudo apt-get update && sudo apt-get -y full-upgrade && sudo apt-get -y autoremove
+    if command -v flatpak >/dev/null; then
+        echo "${BLU}==>${RST} $(t "Aktualizacja aplikacji Flatpak" "Updating Flatpak apps")"
+        flatpak update -y --noninteractive
+    fi
+    if command -v fwupdmgr >/dev/null; then
+        echo "${BLU}==>${RST} $(t "Sprawdzanie firmware" "Checking firmware")"
+        fwupdmgr get-updates 2>/dev/null || true
+    fi
+    echo "${GRN}✔${RST} $(t "System jest aktualny." "System is up to date.")"
+    [[ -f /var/run/reboot-required ]] && echo "${YEL}!${RST} $(t "Wymagany restart." "Reboot required.")"
+    return 0
+}
+
+cmd_search() {
+    [[ $# -ge 1 ]] || { usage; return 1; }
+    echo "${VIO}${BLD}APT${RST}"
+    apt-cache search --names-only "$*" | head -n 15 | sed 's/^/  /'
+    if command -v flatpak >/dev/null; then
+        echo "${VIO}${BLD}Flathub${RST}"
+        flatpak search --columns=application,name,description "$*" 2>/dev/null | head -n 15 | sed 's/^/  /'
+    fi
+}
+
+cmd_install() {
+    [[ $# -ge 1 ]] || { usage; return 1; }
+    local p
+    for p in "$@"; do
+        if is_flatpak_id "$p"; then
+            flatpak install -y --noninteractive flathub "$p"
+        else
+            sudo apt-get install -y "$p"
+        fi
+    done
+}
+
+cmd_remove() {
+    [[ $# -ge 1 ]] || { usage; return 1; }
+    local p
+    for p in "$@"; do
+        case $p in
+            novaos-*|plasma-workspace|plasma-desktop|sddm|linux-generic|systemd|sudo)
+                echo "${RED}✘${RST} $(t "Pakiet $p jest częścią systemu – nie usuwam." "$p is a core package – refusing.")"
+                continue ;;
+        esac
+        if is_flatpak_id "$p"; then
+            flatpak uninstall -y "$p"
+        else
+            # apt pokaże listę i poprosi o potwierdzenie
+            sudo apt-get remove "$p"
+        fi
+    done
+}
+
+cmd_theme() {
+    case ${1:-} in
+        dark)  plasma-apply-colorscheme NovaDark && kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus-Dark ;;
+        light) plasma-apply-colorscheme NovaLight && kwriteconfig6 --file kdeglobals --group Icons --key Theme Papirus ;;
+        *) echo "nova theme dark|light"; return 1 ;;
+    esac
+}
+
+cmd_accent() {
+    [[ ${1:-} =~ ^#[0-9A-Fa-f]{6}$ ]] || { echo "nova accent #RRGGBB"; return 1; }
+    local scheme
+    scheme=$(kreadconfig6 --file kdeglobals --group General --key ColorScheme)
+    plasma-apply-colorscheme --accent-color "$1" "${scheme:-NovaDark}" 2>/dev/null \
+      || plasma-apply-colorscheme --accent-color "$1"
+}
+
+cmd_wallpaper() {
+    [[ -f ${1:-} ]] || { echo "nova wallpaper <$(t plik file)>"; return 1; }
+    plasma-apply-wallpaperimage "$(realpath "$1")"
+}
+
+cmd_doctor() {
+    local okc=0 bad=0
+    check() { if eval "$2" >/dev/null 2>&1; then echo "  ${GRN}✔${RST} $1"; okc=$((okc+1)); else echo "  ${RED}✘${RST} $1"; bad=$((bad+1)); fi; }
+    echo "${VIO}${BLD}$(t "Diagnostyka NovaOS" "NovaOS diagnostics")${RST}"
+    check "$(t "Połączenie z internetem" "Internet connection")" "ping -c1 -W2 archive.ubuntu.com"
+    check "$(t "Menedżer sieci działa" "NetworkManager running")" "systemctl is-active NetworkManager"
+    check "$(t "Repozytoria APT dostępne" "APT repositories reachable")" "apt-cache policy | grep -q archive.ubuntu.com"
+    check "$(t "Flathub skonfigurowany" "Flathub configured")" "flatpak remotes | grep -q flathub"
+    check "$(t "Brak uszkodzonych pakietów" "No broken packages")" "! dpkg -l | grep -q '^iU\|^iF'"
+    check "$(t "Wolne miejsce na / > 5 GB" "Free space on / > 5 GB")" "[ \$(df --output=avail -B1G / | tail -1) -gt 5 ]"
+    check "$(t "Zapora sieciowa (ufw) aktywna" "Firewall (ufw) active")" "systemctl is-active ufw"
+    check "$(t "Zram (swap w RAM) aktywny" "Zram swap active")" "swapon --show | grep -q zram"
+    check "$(t "Rozruch UEFI" "UEFI boot")" "[ -d /sys/firmware/efi ]"
+    if command -v ubuntu-drivers >/dev/null; then
+        echo "  ${DIM}$(t "Zalecane sterowniki:" "Recommended drivers:") $(ubuntu-drivers list 2>/dev/null | tr '\n' ' ')${RST}"
+    fi
+    echo; echo "  $okc OK, $bad $(t problemów problems)"
+}
+
+cmd_clean() {
+    sudo apt-get -y autoremove --purge && sudo apt-get clean
+    command -v flatpak >/dev/null && flatpak uninstall --unused -y
+    echo "${GRN}✔${RST} $(t "Wyczyszczono." "Cleaned.")"
+}
+
+case ${1:-} in
+    ""|info)        info ;;
+    version|-v|--version) cat "$VERSION_FILE" 2>/dev/null || echo "$VERSION_ID" ;;
+    update|upgrade) shift; cmd_update "$@" ;;
+    search)         shift; cmd_search "$@" ;;
+    install)        shift; cmd_install "$@" ;;
+    remove|uninstall) shift; cmd_remove "$@" ;;
+    theme)          shift; cmd_theme "$@" ;;
+    accent)         shift; cmd_accent "$@" ;;
+    wallpaper)      shift; cmd_wallpaper "$@" ;;
+    doctor)         cmd_doctor ;;
+    clean)          cmd_clean ;;
+    help|-h|--help) usage ;;
+    *) echo "$(t "Nieznane polecenie" "Unknown command"): $1"; usage; exit 1 ;;
+esac

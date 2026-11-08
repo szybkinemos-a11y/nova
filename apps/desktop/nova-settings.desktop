@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Settings
+GenericName=Settings
+GenericName[pl]=Ustawienia
+Comment=Configure NovaOS
+Comment[pl]=Konfiguracja NovaOS
+Exec=nova-settings
+Icon=nova-settings
+Categories=Settings;System;
+Keywords=settings;preferences;control;ustawienia;konfiguracja;wifi;bluetooth;
+StartupNotify=true
+StartupWMClass=nova-settings
+Terminal=false

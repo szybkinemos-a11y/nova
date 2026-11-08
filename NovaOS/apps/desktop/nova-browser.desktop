@@ -1,0 +1,21 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Browser
+GenericName=Web Browser
+GenericName[pl]=Przeglądarka internetowa
+Comment=Browse the web
+Comment[pl]=Przeglądaj internet
+Exec=nova-browser %U
+Icon=nova-browser
+Categories=Network;WebBrowser;
+Keywords=web;internet;www;przeglądarka;
+StartupNotify=true
+StartupWMClass=nova-browser
+Terminal=false
+MimeType=text/html;x-scheme-handler/http;x-scheme-handler/https;application/xhtml+xml;
+Actions=new-private-window;
+
+[Desktop Action new-private-window]
+Name=New private window
+Name[pl]=Nowe okno prywatne
+Exec=nova-browser --private

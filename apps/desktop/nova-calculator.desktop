@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Calculator
+GenericName=Calculator
+GenericName[pl]=Kalkulator
+Comment=Standard and scientific calculator
+Comment[pl]=Kalkulator standardowy i naukowy
+Exec=nova-calculator
+Icon=nova-calculator
+Categories=Utility;Calculator;
+Keywords=calc;math;kalkulator;
+StartupNotify=true
+StartupWMClass=nova-calculator
+Terminal=false

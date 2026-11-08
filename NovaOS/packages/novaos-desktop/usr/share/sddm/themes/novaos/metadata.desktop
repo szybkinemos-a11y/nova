@@ -1,0 +1,14 @@
+[SddmGreeterTheme]
+Name=NovaOS
+Description=NovaOS login screen
+Description[pl]=Ekran logowania NovaOS
+Author=NovaOS Team
+License=GPL-3.0-or-later
+Type=sddm-theme
+Version=1.0
+MainScript=Main.qml
+ConfigFile=theme.conf
+Screenshot=background.png
+Theme-Id=novaos
+Theme-API=2.0
+QtVersion=6

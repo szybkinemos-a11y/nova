@@ -1,0 +1,5 @@
+// Używane tylko podczas budowania obrazu (usuwane w etapie finalize)
+APT::Get::Assume-Yes "true";
+Acquire::Retries "5";
+Dpkg::Options { "--force-confdef"; "--force-confold"; };
+Dpkg::Use-Pty "0";

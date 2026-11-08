@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Notes
+GenericName=Notes
+GenericName[pl]=Notatnik
+Comment=Write and organise notes
+Comment[pl]=Pisz i porządkuj notatki
+Exec=nova-notes
+Icon=nova-notes
+Categories=Utility;TextEditor;Office;
+Keywords=notes;markdown;notatki;notatnik;
+StartupNotify=true
+StartupWMClass=nova-notes
+Terminal=false
+MimeType=text/markdown;

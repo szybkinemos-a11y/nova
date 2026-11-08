@@ -1,0 +1,11 @@
+#!/bin/sh
+# Uruchamia instalator NovaOS (Calamares) jako root w bieżącej sesji graficznej.
+# W sesji live użytkownik ma sudo bez hasła (casper).
+LOG="${XDG_CACHE_HOME:-$HOME/.cache}/novaos-install.log"
+mkdir -p "$(dirname "$LOG")"
+if [ "$(id -u)" -eq 0 ]; then
+    exec calamares -d "$@" >"$LOG" 2>&1
+fi
+exec sudo -E env QT_QPA_PLATFORMTHEME=kde XDG_RUNTIME_DIR="$XDG_RUNTIME_DIR" \
+    WAYLAND_DISPLAY="${WAYLAND_DISPLAY:-}" DISPLAY="${DISPLAY:-}" \
+    calamares -d "$@" >"$LOG" 2>&1

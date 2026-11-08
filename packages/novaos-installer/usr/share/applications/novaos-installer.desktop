@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Install NovaOS
+Name[pl]=Zainstaluj NovaOS
+Comment=Install NovaOS on this computer
+Comment[pl]=Zainstaluj NovaOS na tym komputerze
+Exec=novaos-install
+Icon=novaos-installer
+Terminal=false
+Categories=System;
+Keywords=install;installer;calamares;instalator;

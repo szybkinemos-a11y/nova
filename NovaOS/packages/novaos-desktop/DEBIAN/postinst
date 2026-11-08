@@ -1,0 +1,44 @@
+#!/bin/sh
+set -e
+case "$1" in
+    configure)
+        # Ekran rozruchu NovaOS
+        update-alternatives --install /usr/share/plymouth/themes/default.plymouth default.plymouth \
+            /usr/share/plymouth/themes/novaos/novaos.plymouth 300
+        update-alternatives --set default.plymouth /usr/share/plymouth/themes/novaos/novaos.plymouth
+
+        # Czcionki dla motywu GRUB (pf2 generowane z Inter)
+        if command -v grub-mkfont >/dev/null 2>&1; then
+            for spec in "Regular 14" "Regular 16" "Regular 18" "Bold 18" "Bold 32"; do
+                set -- $spec
+                src=/usr/share/fonts/opentype/inter/Inter-$1.otf
+                dst=/usr/share/grub/themes/novaos/inter-$(echo "$1" | tr 'A-Z' 'a-z')-$2.pf2
+                [ -f "$src" ] && [ ! -f "$dst" ] && grub-mkfont -s "$2" -o "$dst" "$src" >/dev/null 2>&1 || true
+            done
+        fi
+
+        # Zapora sieciowa włączona domyślnie (blokuje ruch przychodzący)
+        if [ -f /etc/ufw/ufw.conf ]; then
+            sed -i 's/^ENABLED=.*/ENABLED=yes/' /etc/ufw/ufw.conf
+        fi
+
+        # Repozytorium Flathub: teraz (jeśli jest sieć) albo przy starcie
+        # systemu przez novaos-flathub.service (po połączeniu z siecią).
+        if command -v flatpak >/dev/null 2>&1; then
+            flatpak remote-add --system --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo >/dev/null 2>&1 || true
+        fi
+        if command -v systemctl >/dev/null 2>&1; then
+            systemctl enable novaos-flathub.service >/dev/null 2>&1 || true
+        fi
+
+        command -v gtk-update-icon-cache >/dev/null 2>&1 && gtk-update-icon-cache -q -f /usr/share/icons/hicolor || true
+        command -v fc-cache >/dev/null 2>&1 && fc-cache -f >/dev/null 2>&1 || true
+
+        # Podczas budowania ISO initramfs i GRUB generuje skrypt budowania
+        if [ -z "${NOVAOS_BUILD:-}" ]; then
+            command -v update-initramfs >/dev/null 2>&1 && update-initramfs -u || true
+            [ -f /boot/grub/grub.cfg ] && command -v update-grub >/dev/null 2>&1 && update-grub || true
+        fi
+        ;;
+esac
+exit 0

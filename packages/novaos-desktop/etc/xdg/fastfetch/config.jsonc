@@ -1,0 +1,17 @@
+// NovaOS – konfiguracja fastfetch (komenda: fastfetch / neofetch / nova)
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "source": "/usr/share/novaos/ascii-logo.txt",
+    "color": { "1": "38;5;141", "2": "38;5;75", "3": "38;5;117" },
+    "padding": { "right": 3 }
+  },
+  "display": { "separator": "  ", "color": { "keys": "38;5;141" } },
+  "modules": [
+    "title", "separator",
+    "os", "host", "kernel", "uptime", "packages", "shell",
+    "display", "de", "wm", "theme", "icons", "terminal",
+    "cpu", "gpu", "memory", "swap", "disk", "localip", "locale",
+    "break", "colors"
+  ]
+}

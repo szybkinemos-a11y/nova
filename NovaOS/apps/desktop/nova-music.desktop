@@ -1,0 +1,15 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Music
+GenericName=Music Player
+GenericName[pl]=Odtwarzacz muzyki
+Comment=Play your music
+Comment[pl]=Słuchaj swojej muzyki
+Exec=nova-music %U
+Icon=nova-music
+Categories=AudioVideo;Audio;Player;
+Keywords=music;mp3;audio;muzyka;
+StartupNotify=true
+StartupWMClass=nova-music
+Terminal=false
+MimeType=audio/mpeg;audio/flac;audio/ogg;audio/x-wav;audio/mp4;audio/x-vorbis+ogg;audio/opus;

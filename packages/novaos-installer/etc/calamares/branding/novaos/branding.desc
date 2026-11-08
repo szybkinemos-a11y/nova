@@ -1,0 +1,41 @@
+# NovaOS – branding instalatora
+---
+componentName: novaos
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+windowExpanding: normal
+windowSize: 960px,640px
+windowPlacement: center
+sidebar: widget
+navigation: widget
+
+strings:
+    productName:         "NovaOS"
+    shortProductName:    "NovaOS"
+    version:             "@DISTRO_VERSION@"
+    shortVersion:        "@DISTRO_VERSION@"
+    versionedName:       "NovaOS @DISTRO_VERSION@"
+    shortVersionedName:  "NovaOS @DISTRO_VERSION@"
+    bootloaderEntryName: "NovaOS"
+    productUrl:          "@DISTRO_URL@"
+    supportUrl:          "@DISTRO_URL@/support"
+    knownIssuesUrl:      "@DISTRO_URL@/issues"
+    releaseNotesUrl:     "@DISTRO_URL@/release-notes"
+    donateUrl:           ""
+
+images:
+    productLogo:    "logo.png"
+    productIcon:    "logo.png"
+    productWelcome: "welcome.png"
+
+slideshow: "show.qml"
+slideshowAPI: 2
+
+style:
+    SidebarBackground:         "#12101B"
+    SidebarText:               "#ECEBF5"
+    SidebarTextCurrent:        "#FFFFFF"
+    SidebarTextSelect:         "#FFFFFF"
+    SidebarBackgroundCurrent:  "#7B61FF"
+    SidebarBackgroundSelected: "#7B61FF"

@@ -1,0 +1,62 @@
+# ---------------------------------------------------------------
+#  NovaOS – system bazowy (jądro, rozruch, sprzęt, sieć)
+#  Każda nazwa sprawdzona w repozytorium Ubuntu 26.04 (resolute).
+# ---------------------------------------------------------------
+ubuntu-minimal
+ubuntu-standard
+linux-generic
+linux-firmware
+ubuntu-drivers-common      # automatyczne sterowniki (NVIDIA itd.)
+fwupd                      # aktualizacje firmware
+mesa-vulkan-drivers
+
+# Sesja live + wykrywanie sprzętu
+casper
+laptop-detect
+os-prober
+
+# Rozruch UEFI (Secure Boot) + BIOS, GPT
+shim-signed
+grub-efi-amd64-signed
+grub-efi-amd64-bin
+grub-pc-bin
+efibootmgr
+
+# Systemy plików
+cryptsetup
+lvm2
+btrfs-progs
+dosfstools
+ntfs-3g
+
+# Ekran rozruchu
+plymouth
+plymouth-themes
+
+# Język i region
+locales
+tzdata
+keyboard-configuration
+console-setup
+language-pack-pl
+language-pack-en
+language-pack-kde-pl
+language-pack-kde-en
+
+# Sieć i narzędzia
+network-manager
+iputils-ping
+curl
+wget
+nano
+rsync
+bash-completion
+sudo
+fastfetch
+
+# Bezpieczeństwo i wydajność
+apparmor
+ufw
+unattended-upgrades
+systemd-zram-generator     # skompresowany swap w RAM
+systemd-oomd

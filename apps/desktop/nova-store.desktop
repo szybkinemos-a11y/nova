@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=Nova Store
+GenericName=App Store
+GenericName[pl]=Sklep z aplikacjami
+Comment=Install and update apps
+Comment[pl]=Instaluj i aktualizuj aplikacje
+Exec=nova-store
+Icon=nova-store
+Categories=System;PackageManager;
+Keywords=store;apps;install;flatpak;apt;sklep;instaluj;
+StartupNotify=true
+StartupWMClass=nova-store
+Terminal=false

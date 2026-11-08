@@ -1,0 +1,5 @@
+# ---------------------------------------------------------------
+#  Instalator (tylko w obrazie live – usuwany po instalacji)
+# ---------------------------------------------------------------
+calamares
+qml6-module-qtquick-window

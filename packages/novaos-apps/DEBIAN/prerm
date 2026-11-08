@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+if [ "$1" = remove ]; then
+    update-alternatives --remove x-terminal-emulator /usr/bin/nova-terminal || true
+fi
+find /usr/lib/novaos/python -name '__pycache__' -type d -prune -exec rm -rf {} + 2>/dev/null || true
+exit 0

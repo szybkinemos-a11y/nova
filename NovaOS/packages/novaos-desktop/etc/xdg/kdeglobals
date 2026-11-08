@@ -1,0 +1,26 @@
+# NovaOS – domyślne ustawienia KDE dla wszystkich użytkowników
+[General]
+ColorScheme=NovaDark
+AccentColor=123,97,255
+accentColorFromWallpaper=false
+font=Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+menuFont=Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+smallestReadableFont=Inter,8,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+toolBarFont=Inter,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+fixed=Noto Sans Mono,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+BrowserApplication=nova-browser.desktop
+TerminalApplication=nova-terminal
+TerminalService=nova-terminal.desktop
+
+[Icons]
+Theme=Papirus-Dark
+
+[KDE]
+LookAndFeelPackage=org.novaos.desktop
+widgetStyle=Breeze
+AnimationDurationFactor=0.7071067811865475
+SingleClick=false
+ShowDeleteCommand=false
+
+[WM]
+activeFont=Inter,10,-1,5,600,0,0,0,0,0,0,0,0,0,0,1
